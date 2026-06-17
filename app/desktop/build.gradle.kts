@@ -147,13 +147,13 @@ compose.desktop {
             vendor = "Him188"
 
             val projectVersion = project.version.toString() // 3.0.0-beta22
-            val isBeta = projectVersion.contains("beta", ignoreCase = true)
+            val iconsDir = if (projectVersion.contains("beta", ignoreCase = true)) "icons-beta" else "icons-release"
             macOS {
                 dockName = "Animeko"
                 pkgPackageVersion = projectVersion
                 pkgPackageBuildVersion = projectVersion
                 setDockNameSameAsPackageName = false
-                iconFile.set(file(if (isBeta) "icons/beta_512x512.icns" else "icons/a_512x512.icns"))
+                iconFile.set(file("$iconsDir/a_512x512.icns"))
 //                iconFile.set(project(":app:shared").projectDir.resolve("androidRes/mipmap-xxxhdpi/a.png"))
                 infoPlist {
                     extraKeysRawXml = macOSExtraPlistKeys
@@ -161,14 +161,14 @@ compose.desktop {
             }
             windows {
                 this.upgradeUuid = UUID.randomUUID().toString()
-                iconFile.set(file(if (isBeta) "icons/beta_1024x1024_rounded.ico" else "icons/a_1024x1024_rounded.ico"))
+                iconFile.set(file("$iconsDir/a_1024x1024_rounded.ico"))
             }
             linux {
                 shortcut = true
                 packageName = "animeko"
 //                packageVersion = properties["package.version"].toString()
 //                debPackageVersion = properties["package.version"].toString()
-                iconFile.set(file(if (isBeta) "icons/beta_1024x1024_rounded.ico" else "icons/a_1024x1024_rounded.ico"))
+                iconFile.set(file("$iconsDir/a_1024x1024_rounded.ico"))
             }
 
             // adding copyright causes package to fail.
