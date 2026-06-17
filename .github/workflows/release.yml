@@ -30,8 +30,8 @@ jobs:
     name: 'Create Release'
     runs-on: 'ubuntu-latest'
     outputs:
-      uploadUrl: '${{ steps.step-5.outputs.upload_url }}'
-      id: '${{ steps.step-5.outputs.id }}'
+      uploadUrl: '${{ steps.step-4.outputs.upload_url }}'
+      id: '${{ steps.step-4.outputs.id }}'
     steps:
     - id: 'step-0'
       uses: 'actions/checkout@v4'
@@ -45,50 +45,21 @@ jobs:
         index_of_str: 'v'
         default_return_value: '${{ steps.step-1.outputs.tag }}'
     - id: 'step-3'
-      name: 'Install and Authenticate Codex CLI'
+      name: 'Generate Release Body'
       env:
-        OPENAI_API_KEY: '${{ secrets.OPENAI_API_KEY }}'
-      run: |-
-        npm install -g @openai/codex@latest
-        printenv OPENAI_API_KEY | codex login --with-api-key
-    - id: 'step-4'
-      name: 'Generate Release Notes with Codex'
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        OPENAI_API_KEY: '${{ secrets.OPENAI_API_KEY }}'
-        GITHUB_REPOSITORY: '${{ github.repository }}'
-        CODEX_MODEL: 'gpt-5.5'
         GIT_TAG: '${{ steps.step-1.outputs.tag }}'
         TAG_VERSION: '${{ steps.step-2.outputs.substring }}'
       run: |-
-        set -euo pipefail
-
-        export RELEASE_NOTES="$(ci-helper/generate-release-notes-with-codex.sh "${{ steps.step-1.outputs.tag }}" "${{ steps.step-2.outputs.substring }}")"
-
-        python3 - <<'PY' > "$RUNNER_TEMP/release-body.md"
-        import os
-        from pathlib import Path
-
-        body = Path("ci-helper/release-template.md").read_text()
-        replacements = {
-            "$RELEASE_NOTES": os.environ["RELEASE_NOTES"],
-            "$GIT_TAG": os.environ["GIT_TAG"],
-            "$TAG_VERSION": os.environ["TAG_VERSION"],
-        }
-        for key, value in replacements.items():
-            body = body.replace(key, value)
-        print(body, end="")
-        PY
-
         echo "result<<EOF" >> "$GITHUB_OUTPUT"
-        cat "$RUNNER_TEMP/release-body.md" >> "$GITHUB_OUTPUT"
+        echo "## Release ${{ steps.step-2.outputs.substring }}" >> "$GITHUB_OUTPUT"
+        echo "" >> "$GITHUB_OUTPUT"
+        echo "Download the latest build for your platform below." >> "$GITHUB_OUTPUT"
         echo "EOF" >> "$GITHUB_OUTPUT"
-    - id: 'step-5'
+    - id: 'step-4'
       name: 'Create Release'
       uses: 'softprops/action-gh-release@v1'
       with:
-        body: '${{ steps.step-4.outputs.result }}'
+        body: '${{ steps.step-3.outputs.result }}'
         name: '${{ steps.step-2.outputs.substring }}'
         tag_name: '${{ steps.step-1.outputs.tag }}'
         draft: 'true'
