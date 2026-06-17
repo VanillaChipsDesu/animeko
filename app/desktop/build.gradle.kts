@@ -168,7 +168,7 @@ compose.desktop {
                 packageName = "animeko"
 //                packageVersion = properties["package.version"].toString()
 //                debPackageVersion = properties["package.version"].toString()
-                iconFile.set(file(if (isBeta) "icons/beta_1024x1024_rounded.ico" else "icons/a_1024x1024_rounded.ico"))
+//                iconFile.set(file(if (isBeta) "icons/beta_1024x1024_rounded.ico" else "icons/a_1024x1024_rounded.ico"))
             }
 
             // adding copyright causes package to fail.
