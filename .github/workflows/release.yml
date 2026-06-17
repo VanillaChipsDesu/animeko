@@ -1843,6 +1843,7 @@ jobs:
       if: '${{ steps.step-59.outcome == ''failure'' }}'
     - id: 'step-61'
       name: 'Package Desktop (Attempt #1)'
+      if: '${{ always() }}'
       continue-on-error: true
       timeout-minutes: 180
       run: './gradlew createReleaseDistributable "--scan" "-Porg.gradle.daemon.idletimeout=60000" "-Dfile.encoding=UTF-8" "-Dorg.gradle.jvmargs=-Xmx8g -Dkotlin.daemon.jvm.options=-Xmx6g" "-Dkotlin.daemon.jvm.options=-Xmx6g"'
@@ -1861,6 +1862,7 @@ jobs:
       if: '${{ always() }}'
     - id: 'step-64'
       name: 'Build AppImage'
+      if: '${{ always() }}'
       run: |-
         # Download appimagetool
         wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
