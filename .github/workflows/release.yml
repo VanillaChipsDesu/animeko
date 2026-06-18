@@ -1857,12 +1857,30 @@ jobs:
     - id: 'step-68'
       name: 'Upload Desktop Installers (Attempt #1)'
       continue-on-error: true
-      run: 'echo "Skipped: S3 upload not configured for this fork. Artifacts available via action artifacts."'
+      run: 'echo "Skipped: S3 upload not configured for this fork."'
     - id: 'step-69'
       name: 'Upload Desktop Installers (Attempt #2)'
       continue-on-error: true
       run: 'echo "Skipped"'
     - id: 'step-70'
+      name: 'Upload Linux AppImage'
+      uses: 'actions/upload-artifact@v4'
+      with:
+        name: 'ani-linux-appimage-x64-${{ steps.step-2.outputs.substring }}'
+        path: 'Animeko-x86_64.AppImage'
+        if-no-files-found: 'warn'
+        overwrite: 'true'
+      if: '${{ always() }}'
+    - id: 'step-71'
+      name: 'Upload Linux DEB packages'
+      uses: 'actions/upload-artifact@v4'
+      with:
+        name: 'ani-linux-deb-x64-${{ steps.step-2.outputs.substring }}'
+        path: 'app/desktop/build/compose/binaries/**/*.deb'
+        if-no-files-found: 'warn'
+        overwrite: 'true'
+      if: '${{ always() }}'
+    - id: 'step-72'
       name: 'Upload compose logs'
       uses: 'actions/upload-artifact@v4'
       with:
